@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?><dataset><source-info>
+<DatasetName>SampleTestData</DatasetName>
+<FileName>P:\MobileWork\SampleTestData.xlsx</FileName>
+<GeneratedAt>2016-10-09 20:12:03</GeneratedAt>
+</source-info>
+<options>
+</options>
+<data ref='Case1'><Name>Sample data for test preparation</Name>
+<Description>This is a simple test of data preparation for the test scripts</Description>
+<MasterRecord type='Type1'><columns><column><type>Field</type><name>TechName1</name><caption>Business Name 1</caption></column>
+<column><type>Field</type><name>TechName2</name><caption>Business Name 2</caption></column>
+<column><type>Field</type><name>TechName3</name><caption>Business Name 3</caption></column>
+</columns>
+
+<row id='Type1_1'>
+<Field name='TechName1'>A</Field>
+<Field name='TechName2'>123</Field>
+<Field name='TechName3'>2016-01-01</Field>
+</row>
+<row id='Type1_2'>
+<Field name='TechName1'>B</Field>
+<Field name='TechName2'>456</Field>
+<Field name='TechName3'>2016-01-01</Field>
+</row>
+
+</MasterRecord>
+
+<StudyResult type='Z1'><columns><column><type>Field</type><name>REF_MasterRecord</name><caption>Master Record #</caption></column>
+<column><type>Field</type><name>ResultDate</name><caption>Study date</caption></column>
+<column><type>OtherType</type><name>REVIEW_RESULT</name><caption>Review Result</caption></column>
+</columns>
+
+<row id='Z1_1'>
+<Field name='REF_MasterRecord'>Type1_1</Field>
+<Field name='ResultDate'>2016-01-04</Field>
+<OtherType name='REVIEW_RESULT'>A</OtherType>
+</row>
+<row id='Z1_2'>
+<Field name='REF_MasterRecord'>Type1_1</Field>
+<Field name='ResultDate'>2016-01-21</Field>
+<OtherType name='REVIEW_RESULT'>B</OtherType>
+</row>
+<row id='Z1_3'>
+<Field name='REF_MasterRecord'>Type1_2</Field>
+<Field name='ResultDate'>2016-01-06</Field>
+<OtherType name='REVIEW_RESULT'>C</OtherType>
+</row>
+<row id='Z1_4'>
+<Field name='REF_MasterRecord'>Type1_2</Field>
+<Field name='ResultDate'>2016-01-11</Field>
+<OtherType name='REVIEW_RESULT'>B</OtherType>
+</row>
+
+</StudyResult>
+
+<StudyResult type='Z2'><columns><column><type>Field</type><name>REF_MasterRecord</name><caption>Master Record #</caption></column>
+<column><type>Field</type><name>ResultDate</name><caption>Evaluation date</caption></column>
+<column><type>OtherType</type><name>RESPONSE_RATE</name><caption>Response Rate</caption></column>
+<column><type>OtherType</type><name>TEST_RESULTS</name><caption>Tests</caption></column>
+</columns>
+
+<row id='Z2_1'>
+<Field name='REF_MasterRecord'>Type1_2</Field>
+<Field name='ResultDate'>2016-01-11</Field>
+<OtherType name='RESPONSE_RATE'>High</OtherType>
+<OtherType name='TEST_RESULTS'>Passed</OtherType>
+</row>
+
+</StudyResult>
+
+<StudyResult type='Z3'><columns><column><type>Field</type><name>REF_MasterRecord</name><caption>Master Record #</caption></column>
+<column><type>Field</type><name>ResultDate</name><caption>Testing Date</caption></column>
+<column><type>OtherType</type><name>STUDY_RESULT</name><caption>Result</caption></column>
+</columns>
+
+<row id='Z3_1'>
+<Field name='REF_MasterRecord'>Type1_1</Field>
+<Field name='ResultDate'>2016-01-21</Field>
+<OtherType name='STUDY_RESULT'>OK</OtherType>
+</row>
+
+</StudyResult>
+
+<ExpectedResult><columns><column><type>Field</type><name>REF_MasterRecord</name><caption>Master Record #</caption></column>
+<column><type>Field</type><name>Advice</name><caption>Type</caption></column>
+<column><type>Field</type><name>FinalResult</name><caption>Result</caption></column>
+<column><type>Comment</type><name>TestName</name><caption>Test Name*</caption></column>
+</columns>
+
+<row id='ExpectedResult_1'>
+<Field name='REF_MasterRecord'>Type1_1</Field>
+<Field name='Advice'>WILL_ACCEPT_OFFER1</Field>
+<Field name='FinalResult'>HIGH</Field>
+<Comment name='TestName'>Test_1_1</Comment>
+</row>
+<row id='ExpectedResult_2'>
+<Field name='REF_MasterRecord'>Type1_1</Field>
+<Field name='Advice'>WILL_ACCEPT_OFFER2</Field>
+<Field name='FinalResult'>MEDIUM</Field>
+<Comment name='TestName'>Test_1_2</Comment>
+</row>
+<row id='ExpectedResult_3'>
+<Field name='REF_MasterRecord'>Type1_2</Field>
+<Field name='Advice'>WILL_ACCEPT_OFFER1</Field>
+<Field name='FinalResult'>LOW</Field>
+<Comment name='TestName'>Test_2_1</Comment>
+</row>
+<row id='ExpectedResult_4'>
+<Field name='REF_MasterRecord'>Type1_2</Field>
+<Field name='Advice'>WILL_ACCEPT_OFFER2</Field>
+<Field name='FinalResult'>HIGH</Field>
+<Comment name='TestName'>Test_2_2</Comment>
+</row>
+
+</ExpectedResult>
+
+</data>
+
+</dataset>
+
+
