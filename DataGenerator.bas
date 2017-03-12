@@ -444,14 +444,38 @@ Private Function GetData(Start As Range, parentID As String) As String
     Wend
     
 End Function
-
+Private Function getElementValue(value As String) As String
+    Dim badStrings As String
+    badstring = "<>?/\&%@"
+    
+    doEscape = False
+    
+    For i = 1 To Len(badstring)
+        searchChr = Mid(badstring, i, 1)
+        If InStr(value, searchChr) > 0 Then
+            doEscape = True
+            Exit For
+        End If
+    Next i
+    
+    getElementValue = value
+    
+    If doEscape Then
+        getElementValue = "<![CDATA[" + getElementValue + "]]>"
+    End If
+    
+End Function
 
 Private Function getElementString(elementName As String, name As String, value As String) As String
-    getElementString = "<" + elementName + " name='" + name + "'>" + value + "</" + elementName + ">"
+    getElementString = "<" + elementName
+    If name <> "" Then
+        getElementString = getElementString + " name='" + name + "'"
+    End If
+    getElementString = getElementString + ">" + getElementValue(value) + "</" + elementName + ">"
 End Function
 
 Private Function getTextElementString(elementName As String, value As String) As String
-    getTextElementString = "<" + elementName + ">" + value + "</" + elementName + ">"
+    getTextElementString = getElementString(elementName, "", value)
 End Function
 
 Sub Append(ByRef Trg As String, ByRef newString As String)
