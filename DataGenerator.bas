@@ -1,4 +1,19 @@
 Attribute VB_Name = "DataGenerator"
+' Use this script to generate data from excel file and convert it into test scripts
+' Procedurtes to run from the UI:
+'
+' MakeDataExtract
+'   Extract data into XML file.
+'   XML file will be saved in the same folder as original Excel file with name <filename>.testdata.xml
+'
+' MakeDateExtractAndTransform
+'   Extracts data and transforms using the stylesheet
+'   Default stylesheet name is:
+Const DEFAULT_STYLESHEET_NAME = "TestData_to_DMCTestSQL.xsl"
+'   File will be saved under the same folder with the name <file name>.testclass.sql
+
+Const DEFAULT_FILE_EXTENSION = ".testclass.sql"
+
 Const MAX_BLANK_LINES_BETWEEN_BLOCKS = 2
 
 Sub MakeDataExtract()
@@ -15,7 +30,7 @@ Sub MakeDataExtract()
     
     ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
     
-    ExportFileName = ExportFileName + ".TestData.xml"
+    ExportFileName = ExportFileName + ".data.xml"
     
     Open ExportFileName For Output As #1
     Print #1, Data
@@ -23,18 +38,20 @@ Sub MakeDataExtract()
     
 End Sub
 
-Sub MakeDateExtractAndTransform()
+Sub MakeDateExtractAndTransformOne()
     Dim xml As DOMDocument
     Dim xslt As DOMDocument
     Dim WB As Workbook
     Dim W As Workbook
     Dim Data As String
     Dim StylesheetName As String
+    Dim FileExtension As String
     Dim N As name
     Dim R As Range
         
     Set WB = Application.ActiveWorkbook
-    StylesheetName = "TestData_to_Autotest.xsl"
+    StylesheetName = DEFAULT_STYLESHEET_NAME
+    FileExtension = DEFAULT_FILE_EXTENSION
     
     On Error Resume Next
     
@@ -48,6 +65,20 @@ Sub MakeDateExtractAndTransform()
     End If
     
     On Error GoTo 0
+    
+    On Error Resume Next
+    
+    Set N = WB.Names("ouput_file_extenstion")
+    Set R = N.RefersToRange
+    If Not (R Is Nothing) Then
+        feName = R.value
+        If feName <> "" Then
+            FileExtension = feName
+        End If
+    End If
+    
+    On Error GoTo 0
+    
     
     Data = "<?xml version='1.0' encoding='UTF-8'?>"
     
@@ -67,7 +98,7 @@ Sub MakeDateExtractAndTransform()
             
             ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
             
-            ExportFileName = ExportFileName + ".testclass.sql"
+            ExportFileName = ExportFileName + FileExtension
             
             Open ExportFileName For Output As #1
             Print #1, Data
@@ -76,6 +107,65 @@ Sub MakeDateExtractAndTransform()
         End If
     End If
     
+End Sub
+Sub MakeDateExtractAndTransform()
+    Dim xml As DOMDocument
+    Dim xslt As DOMDocument
+    Dim WB As Workbook
+    Dim Opts As Worksheet
+    Dim Data As String
+    Dim StylesheetName As String
+    Dim FileExtension As String
+    Dim N As name
+    Dim R As Range
+    Dim LO As ListObject
+            
+    Set WB = Application.ActiveWorkbook
+    
+    Set Opts = WB.Sheets("Options")
+    
+    On Error Resume Next
+    
+    Set LO = Opts.ListObjects("TransformationOptions")
+    
+    On Error GoTo 0
+   
+    If Not (LO Is Nothing) Then
+        Data = "<?xml version='1.0' encoding='UTF-8'?>"
+        
+        AppendLine Data, GetWorkbookData(WB)
+        
+        Set xml = New DOMDocument
+        
+        If xml.LoadXML(Data) Then
+            Set xslt = New DOMDocument
+            
+            xsltPath = Application.ThisWorkbook.Path
+            
+            For idx = 1 To LO.ListRows.Count
+                StylesheetName = LO.ListRows(idx).Range(1)
+                FileExtension = LO.ListRows(idx).Range(2)
+            
+                If xslt.Load(xsltPath + "/" + StylesheetName) Then
+                    Data = xml.transformNode(xslt)
+                    
+                    ExportFileName = WB.FullName
+                    
+                    ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
+                    
+                    ExportFileName = ExportFileName + FileExtension
+                    
+                    Open ExportFileName For Output As #1
+                    Print #1, Data
+                    Close #1
+            
+                End If
+            Next idx
+        End If
+    Else
+        MakeDateExtractAndTransformOne
+    End If
+
 End Sub
 
 Sub FileList_MakeDateExtractAndTransform()
@@ -142,7 +232,9 @@ Function GetWorkbookData(WB As Workbook) As String
             If R.Worksheet.name = "Options" Then
                 optionName = N.name
                 optionValue = R.value
-                AppendLine GetWorkbookData, getTextElementString(optionName, optionValue)
+                If optionValue <> "" Then
+                    AppendLine GetWorkbookData, getTextElementString(optionName, optionValue)
+                End If
             End If
         End If
     Next N
@@ -174,6 +266,9 @@ Function GetSheetData(S As Worksheet) As String
     blankLinesSkipped = 0
     
     Data = "<data ref='" + S.name + "'>"
+    
+    blankLinesSkipped = skipBlankLine(S, colIdx, rowIdx, MAX_BLANK_LINES_BETWEEN_BLOCKS)
+    endOfSheet = blankLinesSkipped > MAX_BLANK_LINES_BETWEEN_BLOCKS
     
     While Not endOfSheet
         Set R = S.Cells(rowIdx, colIdx)
