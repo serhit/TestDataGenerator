@@ -38,7 +38,7 @@ Sub MakeDataExtract()
     
 End Sub
 
-Sub MakeDateExtractAndTransformOne()
+Sub MakeDataExtractAndTransformOne()
     Dim xml As DOMDocument
     Dim xslt As DOMDocument
     Dim WB As Workbook
@@ -108,7 +108,7 @@ Sub MakeDateExtractAndTransformOne()
     End If
     
 End Sub
-Sub MakeDateExtractAndTransform()
+Sub MakeDataExtractAndTransform()
     Dim xml As DOMDocument
     Dim xslt As DOMDocument
     Dim WB As Workbook
@@ -163,7 +163,7 @@ Sub MakeDateExtractAndTransform()
             Next idx
         End If
     Else
-        MakeDateExtractAndTransformOne
+        MakeDataExtractAndTransformOne
     End If
 
 End Sub
@@ -496,7 +496,4 @@ Sub AppendLineOffset(ByRef Trg As String, ByRef newString As String)
     Append Trg, "  "
     AppendLine Trg, newString
 End Sub
-
-
-
 
